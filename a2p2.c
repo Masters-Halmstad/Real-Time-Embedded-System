@@ -12,7 +12,7 @@
 #include <string.h>
 
 #define LINE 32
-#define waitTime 2000000
+#define waitTime 500000
 
 int main()
 {
@@ -20,19 +20,26 @@ int main()
 	char str[LINE];
 	piface_init();
 	piface_clear();
+	int expNumber = 1;
 
 	piface_puts("DT8025 - A2P2");
 	RPI_WaitMicroSeconds(waitTime);
 	ExpStruct *value;
+	while (1)
+	{
+		while (expNumber < 21)
+		{
+			value = iexp(expNumber);
+			sprintf(str, "%d: %d.%d", expNumber, value->expInt, value->expFraction);
+			piface_clear();
+			RPI_WaitMicroSeconds(waitTime);
+			piface_puts(str);
+			RPI_WaitMicroSeconds(waitTime);
+			free(value);
+			expNumber++;
+		}
+		expNumber = 1;
+	}
 
-	value = iexp(10);
-
-	sprintf(str, "%d: %d.%d", 10, value->expInt, value->expFraction);
-	// strcpy(str, "10: 22026.47");
-	piface_clear();
-	RPI_WaitMicroSeconds(waitTime);
-	piface_puts(str);
-	RPI_WaitMicroSeconds(waitTime);
-	free(value);
 	return 0;
 }
