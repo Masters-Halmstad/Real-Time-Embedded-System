@@ -1,37 +1,45 @@
 /*
-    Part of the Real-Time Embedded Systems course at Halmstad University
-    Copyright (c) 2017, Sebastian Kunze <sebastian.kunze@hh.se>
-    All rights reserved.
+	Part of the Real-Time Embedded Systems course at Halmstad University
+	Copyright (c) 2017, Sebastian Kunze <sebastian.kunze@hh.se>
+	All rights reserved.
 */
 /*
  * Modified by Wagner Morais on Aug 2023.
-*/
+ */
 #include <stdio.h>
 #include "expstruct.h"
 #include "led.h"
+#include <stdlib.h>
+#include "piface.h"
 
 // #define LINE 32
+#define waitTime 500000
 
 int main()
 {
-	
+
 	// char str[LINE];
 	led_init();
-	RPI_WaitMicroSeconds(2000000);	
-	
-    ExpStruct* value;
-  
-    int i = 1; 
+	piface_init();
+	piface_clear();
+	piface_puts("DT8025 - A2P3\n");
+	RPI_WaitMicroSeconds(waitTime);
+
+	char str[50];
+	ExpStruct *value;
+
+	int i = 1;
 	// cyclic execution
-    while (1) {
+	while (1)
+	{
 		value = iexp(i++);
-		// sprintf(str,"%d: %d.%d\n", i, value->expInt, value->expFraction);
-		// piface_puts(str);		
-		led_toogle();	// or led_blink();
+		piface_clear();
+		sprintf(str, "%d: %d.%d\n", i, value->expInt, value->expFraction);
+		piface_puts(str);
 		if (i >= 20)
 			i = 1;
 		free(value);
-		// piface_clear();
-    }
+		// for test
+	}
 	return 0;
 }

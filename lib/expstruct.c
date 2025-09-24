@@ -12,6 +12,7 @@
 #include "expstruct.h"
 #include <math.h>
 #include <stdio.h>
+#include "led.h"
 
 ExpStruct *iexp(int x)
 {
@@ -36,8 +37,12 @@ ExpStruct *iexp(int x)
         {
             break;
         }
-
+        RPI_WaitMicroSeconds(50000);
         n++;
+        if (n % 5 == 0)
+        {
+            led_toogle();
+        }
     }
 
     ExpStruct *e = (ExpStruct *)malloc(sizeof(ExpStruct));
