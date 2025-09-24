@@ -10,15 +10,17 @@
 
 int main()
 {
-	led_init();
+    led_init();
 
-    //blinking
-    while(1){
-        led_blink();
+    // blinking
+    while (1)
+    {
+        led_toogle();
+        RPI_WaitMicroSeconds(200000);
     }
 
-    //toogle 
-    // led_off();
-    // RPI_WaitMicroSeconds(100000);
-    // led_toogle();
+    // toogle
+    //  led_off();
+    //  RPI_WaitMicroSeconds(100000);
+    //  led_toogle();
 }
