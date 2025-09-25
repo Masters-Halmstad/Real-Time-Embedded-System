@@ -28,7 +28,7 @@ ExpStruct *iexp(int x)
 
     while (n < 100)
     {
-        termValue *= (double)x / n; // termValue  = (x/n) * (x^(n-1) / ((n-1)!))
+        termValue *= (double)x / n; // newTermValue  = (x/n) * (x^(n-1) / ((n-1)!))
         factorialSum += termValue;
 
         // if new term is small enough that will not effect the result(sum) beyond two decimal place stop the iteration
@@ -43,6 +43,5 @@ ExpStruct *iexp(int x)
     ExpStruct *e = (ExpStruct *)malloc(sizeof(ExpStruct));
     e->expInt = (int)factorialSum;
     e->expFraction = (int)((factorialSum - (e->expInt)) * 100 + 0.5);
-
     return e;
 }

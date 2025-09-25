@@ -10,6 +10,7 @@
 #include "expstruct.h"
 #include "piface.h"
 #include <string.h>
+#include <rpi-systimer.h>
 
 #define LINE 32
 #define waitTime 500000
@@ -30,9 +31,8 @@ int main()
 		while (expNumber < 21)
 		{
 			value = iexp(expNumber);
-			sprintf(str, "%d: %d.%d", expNumber, value->expInt, value->expFraction);
 			piface_clear();
-			RPI_WaitMicroSeconds(waitTime);
+			sprintf(str, "%d: %d.%d", expNumber, value->expInt, value->expFraction);
 			piface_puts(str);
 			RPI_WaitMicroSeconds(waitTime);
 			free(value);
