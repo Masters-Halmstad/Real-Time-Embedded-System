@@ -13,6 +13,11 @@
 #include <math.h>
 #include <stdio.h>
 #include "led.h"
+#include "rpi-systimer.h"
+
+#define Count_Limit 150
+
+static int counter = 0;
 
 ExpStruct *iexp(int x)
 {
@@ -39,9 +44,14 @@ ExpStruct *iexp(int x)
         }
         RPI_WaitMicroSeconds(50000);
         n++;
-        if (n % 5 == 0)
+        if (counter % 3 == 0)
         {
             led_toogle();
+        }
+        counter++;
+        if (counter > Count_Limit)
+        {
+            counter = 0;
         }
     }
 

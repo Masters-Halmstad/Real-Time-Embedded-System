@@ -11,6 +11,7 @@
 #include "led.h"
 #include <stdlib.h>
 #include "piface.h"
+#include "rpi-systimer.h"
 
 // #define LINE 32
 #define waitTime 500000
@@ -29,7 +30,7 @@ int main()
 	ExpStruct *value;
 
 	int i = 1;
-	// cyclic execution
+
 	while (1)
 	{
 		value = iexp(i++);
@@ -39,7 +40,6 @@ int main()
 		if (i >= 20)
 			i = 1;
 		free(value);
-		// for test
 	}
 	return 0;
 }
