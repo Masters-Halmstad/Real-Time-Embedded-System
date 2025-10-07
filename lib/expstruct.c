@@ -12,6 +12,7 @@
 #include "expstruct.h"
 #include <math.h>
 #include <stdio.h>
+#include <tinythreads.h>
 
 ExpStruct *iexp(int x)
 {
@@ -38,6 +39,7 @@ ExpStruct *iexp(int x)
         }
 
         n++;
+        yield();
     }
 
     ExpStruct *e = (ExpStruct *)malloc(sizeof(ExpStruct));
