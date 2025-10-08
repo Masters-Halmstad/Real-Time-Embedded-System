@@ -107,19 +107,31 @@ void computeExponential(int seg)
 	}
 }
 
+// int main() {
+
+// 	piface_init();
+// 	piface_clear();
+
+// 	piface_puts("DT8025 - A3P3");
+// 	RPI_WaitMicroSeconds(2000000);
+// 	piface_clear();
+
+// 	spawn(computePower, 0);
+// 	computePrimes(1);
+// }
+
 int main()
 {
 
 	piface_init();
 	piface_clear();
 
-	piface_puts("DT8025 - A3P1");
+	piface_puts("DT8025 - A3P3");
 	RPI_WaitMicroSeconds(2000000);
 	piface_clear();
 
 	spawn(computePower, 0);
 	spawn(computePrimes, 1);
-	// spawn(computeExponential, 2);
+	spawn(computeExponential, 2);
 	computeExponential(3);
-	// computePrimes(1);
 }

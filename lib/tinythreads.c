@@ -115,16 +115,28 @@ static thread dequeue(thread *queue)
 
 /** @brief Initialize a single thread
  */
-static void initializeThread(thread *t, int idx)
-{
-	(*t)->idx = idx;
-	(*t)->function = NULL;
-	(*t)->arg = -1;
-	(*t)->next = &threads[idx + 1];
-	(*t)->Period_Deadline = INT_MAX;
-	(*t)->Rel_Period_Deadline = INT_MAX;
-}
+////---->> BUGGY INITIALIZATION <<------ ###
 
+// static void initializeThread(thread *t, int idx)
+// {
+// 	(*t)->idx = idx;
+// 	(*t)->function = NULL;
+// 	(*t)->arg = -1;
+// 	(*t)->next = &threads[idx + 1];
+// 	(*t)->Period_Deadline = INT_MAX;
+// 	(*t)->Rel_Period_Deadline = INT_MAX;
+// }
+
+// fixed one
+static void initializeThread(struct thread_block *t, int idx)
+{
+	(*t).idx = idx;
+	(*t).function = NULL;
+	(*t).arg = -1;
+	(*t).next = &threads[idx + 1];
+	(*t).Period_Deadline = INT_MAX;
+	(*t).Rel_Period_Deadline = INT_MAX;
+}
 /** @brief Initializes each thread in the threads array.
  * For each thread in the threads array, a unique identifier is assigned
  * along with the task information.
