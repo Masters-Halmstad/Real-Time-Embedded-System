@@ -13,7 +13,8 @@
 #include <string.h>
 #include "rpi-gpio.h"
 #include "piface.h"
-
+#include "tinythreads.h"
+#include "rpi-systimer.h"
 int cnt;
 
 /* Bit-Banging SPI Driver */
@@ -276,21 +277,20 @@ void piface_clear(void)
  */
 void piface_set_cursor(uint8_t col, uint8_t row)
 {
-	// to be implemented
-	if (row < 0 || row > 1)
+	if (row > 1)
 	{
 		printf("Error: Invalid row %d (must be 0-1)\n", row);
 		return;
 	}
 
-	if (col < 0 || row > 15)
+	if (col > 15)
 	{
 		printf("Error: Invalid col %d (must be 0-15)\n", row);
 		return;
 	}
 
 	// base address for each row
-	static const uint8_t row_base[] = {0x00, 0x40};
+	const uint8_t row_base[] = {0x00, 0x40};
 
 	// compute the DDRAM address
 	uint8_t addr = row_base[row] + col;
@@ -332,22 +332,28 @@ void print_at_seg(int seg, int num)
 	{
 	case 0:
 		piface_set_cursor(0, 0);
+		cnt = 0;
 		break;
 	case 1:
 		piface_set_cursor(8, 0);
+		cnt = 8;
 		break;
 	case 2:
 		piface_set_cursor(0, 1);
+		cnt = 16;
 		break;
 	case 3:
 		piface_set_cursor(8, 1);
+		cnt = 24;
+		break;
+	default:
 		break;
 	}
 
 	// display information
-	if (num > 999)
-		num %= 1000;
-	PUTTOLDC("S%d: %d", seg, num);
+	// if (num > 999)
+	// 	num %= 1000;
+	PUTTOLDC("S%d:%d", seg, num);
 }
 
 /** @brief Similar to print_at_seg, but displays arbitrary content on a given segment. For example:

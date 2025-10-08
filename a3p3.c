@@ -17,7 +17,7 @@
 
 #include "tinythreads.h"
 #include "piface.h"
-#include "expstruct.h"
+#include "lib/expstruct.h"
 
 /** @brief Checks whether the input parameter is divisible by itself and 1, i.e, if the input parameter is prime.
  *  @param int i Is the input parameter to be checked whether it is prime or not
@@ -90,19 +90,18 @@ void computeExponential(int seg)
 		{
 			// free(iexp(n++));
 			value = iexp(n++);
-
-			// If `seg` is odd, the function displays the fraction part of iexp; otherwise, it displays the integer part.
 			if (seg % 2 == 0)
 			{
-				// Even segment → show integer part
+				// Even segment
 				print_at_seg(seg, value->expInt);
 			}
 			else
 			{
-				// Odd segment → show fractional part
+				// Odd segment
 				print_at_seg(seg, value->expFraction);
 			}
-			RPI_WaitMicroSeconds(500000); // delay of 0.5s added for visualization purposes!!!
+			RPI_WaitMicroSeconds(500000);
+			yield();
 			free(value);
 		}
 	}
@@ -118,9 +117,9 @@ int main()
 	RPI_WaitMicroSeconds(2000000);
 	piface_clear();
 
-	// spawn(computePower, 0);
-	// spawn(computePrimes, 1);
-	spawn(computeExponential, 2);
+	spawn(computePower, 0);
+	spawn(computePrimes, 1);
+	// spawn(computeExponential, 2);
 	computeExponential(3);
 	// computePrimes(1);
 }

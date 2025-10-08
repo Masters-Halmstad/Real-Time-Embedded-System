@@ -39,7 +39,6 @@ ExpStruct *iexp(int x)
         }
 
         n++;
-        yield();
     }
 
     ExpStruct *e = (ExpStruct *)malloc(sizeof(ExpStruct));
