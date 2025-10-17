@@ -229,6 +229,7 @@ void respawn_periodic_tasks(void) {
  */
 static void scheduler_RR(void){
 	// To be implemented in Assignment 4!!!
+	yield();
 }
 
 /** @brief Schedules periodic tasks using Rate Monotonic (RM) 
@@ -250,6 +251,7 @@ static void scheduler_EDF(void){
  */
 void scheduler(void){
 	// To be implemented in Assignment 4!!!
+	scheduler_RR();
 }
 
 /** @brief Prints via UART the content of the main variables in TinyThreads
