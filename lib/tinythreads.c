@@ -188,12 +188,10 @@ void lock(mutex *m) {
 	DISABLE();
 
 	// locked = 0 : mutex is available (no one holds it)
+	// locked = 1: mutex is locked (some thread owns it)
 	if(m->locked == 0){
 		m->locked = 1;	// locking the mutex 
-		continue;
-	}
-	// locked = 1: mutex is locked (some thread owns it)
-	else if (m->locked == 1){
+	}else{
 		enqueue(current, &m->waitQ); // put the current thread in waitQ thread block
 		dispatch(dequeue(&readyQ)); // switching to next thread
 	}
@@ -208,8 +206,8 @@ void unlock(mutex *m) {
 	// if there any thread on the waitQ , releasiting  and giving the current context 
 
 	// test if condition :
-			// m->waitQ == NULL || m->waitQ != 0
-	if(m->waitQ == NULL){
+			// m->waitQ != NULL || m->waitQ != 0
+	if(m->waitQ != NULL){
 		enqueue(current, &readyQ);
 		dispatch(dequeue(&m->waitQ));
 	}else{
