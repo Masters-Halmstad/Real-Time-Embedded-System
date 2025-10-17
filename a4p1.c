@@ -33,6 +33,9 @@
 #include "rpi-systimer.h"
 #include "rpi-interrupts.h"
 
+void *__exidx_start = 0;
+void *__exidx_end = 0; 
+
 __attribute__(( always_inline )) static inline void enable_interrupts() {
   __asm volatile("cpsie i \n"); 
 }

@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "expstruct.h"
 #include "rpi-systimer.h"
+#include <stdio.h>
 
 ExpStruct *iexp(int x)
 {
