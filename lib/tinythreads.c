@@ -185,14 +185,37 @@ void yield(void) {
  * mutex and a new thread should be dispatched from the ready queue. 
  */
 void lock(mutex *m) {
-	// To be implemented in Assignment 4!!!
+	DISABLE();
+
+	// locked = 0 : mutex is available (no one holds it)
+	if(m->locked == 0){
+		m->locked = 1;	// locking the mutex 
+		continue;
+	}
+	// locked = 1: mutex is locked (some thread owns it)
+	else if (m->locked == 1){
+		enqueue(current, &m->waitQ); // put the current thread in waitQ thread block
+		dispatch(dequeue(&readyQ)); // switching to next thread
+	}
+	ENABLE();
 }
 
 /** @brief Activate a thread in the waiting queue of the mutex if it is
  * non-empty, otherwise, the locked flag shall be reset.
  */
 void unlock(mutex *m) {
-	// To be implemented in Assignment 4!!!
+	DISABLE();
+	// if there any thread on the waitQ , releasiting  and giving the current context 
+
+	// test if condition :
+			// m->waitQ == NULL || m->waitQ != 0
+	if(m->waitQ == NULL){
+		enqueue(current, &readyQ);
+		dispatch(dequeue(&m->waitQ));
+	}else{
+		m->locked = 0 ; 
+	}
+	ENABLE();
 }
 
 /** @brief Creates an thread block instance and assign to it an start routine, 
