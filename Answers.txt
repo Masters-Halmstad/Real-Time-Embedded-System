@@ -1,0 +1,35 @@
+a. What is the purpose of the macros DISABLE() and ENABLE()?
+
+>> In a context switching and shared data structures(readyQ, waitQ etc), it is 
+    important that it must not be interrupted while being modified. DISABLE() and 
+    ENABLE() macros control the interrupts by :
+        DISABLE() : It temporarily turns off all the interrupts on the processor to 
+                    avoid race conditions i.e this prevents the timer or any other 
+                    interrupt from  preempting(to take control) the current code section.
+        ENABLE() : It re-enable interrupts after the critical section has safely 
+                    completed. This resume normal preemption and interrupt handling.
+
+b. What potential issues could arise if a yield() call were injected at the least suitable
+ location within functions like dispatch() or enqueue()? How about injecting such a call into 
+ yield() itself?
+
+>> b.1 >> If a yield() call were injected at the least suitable location within functions like
+            dispatch or enqueue, then following issues could occur :
+        a. Infinite context switching : The system may fall in infinte loop or enqueing and
+                    dequing never giving the space to execute thread 
+        b. Corrupted kernel data: Calling yeild in mid-update, another thread could run and
+                    access partially updated structures resulting in data corruption or 
+                    undefined behavior.
+        c. System crashes: Context switching while the CPU stack or registers are in the
+                    middle of a sensitive operation could result in corrupted stack 
+                    frames or return addresses.
+
+>> b.2 >> injecting yeild inside yeild itself can causes :
+        a. Recursive context switching: The functions starts saving the current context while 
+                    the previous context save isn't finsihed yet 
+        b. Deadlocks/Infinite loops: This can overwrite CPU register, leading to deadlocks or 
+                    infinte loops 
+        c. System Crashes: Nested context swicthes, leads to corrupt registers/stack states,
+                    potentially crashing the entire system.
+                    
+                
