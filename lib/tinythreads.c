@@ -281,7 +281,37 @@ void spawnWithDeadline(void (*function)(int), int arg, unsigned int deadline, un
  */
 static void sortX(thread *queue)
 {
-	// To be implemented in Assignment 4!!!
+	if (!queue || !(*queue) || !(*queue)->next)
+		return;
+
+	thread sorted = NULL; // new sorted list
+	thread curr = *queue; // start with the original queue
+
+	while (curr)
+	{
+		thread next = curr->next; // save next node
+
+		// insert current node into the correct place in sorted list
+		if (!sorted || curr->Rel_Period_Deadline < sorted->Rel_Period_Deadline)
+		{
+			curr->next = sorted;
+			sorted = curr;
+		}
+		else
+		{
+			thread temp = sorted;
+			while (temp->next && temp->next->Rel_Period_Deadline <= curr->Rel_Period_Deadline)
+			{
+				temp = temp->next;
+			}
+			curr->next = temp->next;
+			temp->next = curr;
+		}
+
+		curr = next; // move to the next node in original list
+	}
+
+	*queue = sorted; // update original queue pointer
 }
 
 /** @brief Removes a specific element from the queue.
@@ -338,7 +368,16 @@ static void scheduler_RR(void)
  */
 static void scheduler_RM(void)
 {
-	// To be implemented in Assignment 4!!!
+	// sorting the readyQ on the basis of the priority
+	// that is the shorter period has the highest priority.
+	sortX(&readyQ);
+
+	// If a new ready thread has a smaller period (i.e., higher priority)
+	// the currently running one should yield the CPU to let it run.
+	if (current->Rel_Period_Deadline > readyQ->Rel_Period_Deadline)
+	{
+		yield();
+	}
 }
 
 /** @brief Schedules periodic tasks using Earliest Deadline First  (EDF)
