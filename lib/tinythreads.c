@@ -394,8 +394,8 @@ static void scheduler_EDF(void)
  */
 void scheduler(void)
 {
-	// To be implemented in Assignment 4!!!
-	scheduler_RR();
+	respawn_periodic_tasks();
+	scheduler_RM();
 }
 
 /** @brief Prints via UART the content of the main variables in TinyThreads
