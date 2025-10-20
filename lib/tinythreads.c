@@ -340,7 +340,8 @@ static void sortX(thread *queue)
 			{				   // If the thread with the highest priority is NULL
 				high_p = curr; //	Set the thread with the highest priority as the current thread
 			}
-			else if (curr->Rel_Period_Deadline < high_p->Rel_Period_Deadline)
+			// setting task to high priority based on absolute deadline
+			else if (curr->Period_Deadline < high_p->Period_Deadline)
 			{				   // If the current thread has a higher priority than the thread with the highest priority
 				high_p = curr; //	Set the thread with the highest priority as the current thread
 			}
@@ -415,7 +416,15 @@ static void scheduler_RM(void)
  */
 static void scheduler_EDF(void)
 {
-	// To be implemented in Assignment 4!!!
+	// sorting the readyQ on the basis of the priority
+	// that is the shorter period has the highest priority.
+	sortX(&readyQ);
+
+	// yeilding to the task having nearest deadline
+	if (current->Period_Deadline > readyQ->Period_Deadline)
+	{
+		yield();
+	}
 }
 
 /** @brief Calls the actual scheduling mechanisms, i.e., Round Robin,
@@ -426,7 +435,7 @@ static void scheduler_EDF(void)
 void scheduler(void)
 {
 	respawn_periodic_tasks();
-	scheduler_RM();
+	scheduler_EDF();
 }
 
 /** @brief Prints via UART the content of the main variables in TinyThreads
