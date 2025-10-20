@@ -367,7 +367,7 @@ void respawn_periodic_tasks(void)
 	while (currentT != NULL)
 	{
 		// If the current thread has reached its deadline
-		if (ticks % currentT->Rel_Period_Deadline == 0)
+		if (ticks % currentT->Period_Deadline == 0)
 		{
 			currentT = dequeueItem(&doneQ, currentT->idx); // Dequeue the current thread from the done queue
 			if (setjmp(currentT->context) == 1)
