@@ -119,7 +119,26 @@ void computeSomething(int seg)
   while (t == ticks)
     ;
 }
+// 1st Part
 
+// int main()
+// {
+//   piface_init();
+//   piface_puts("DT8025 - A4P2");
+//   RPI_WaitMicroSeconds(2000000);
+//   piface_clear();
+
+//   spawnWithDeadline(computeSomething, 0, 5, 5);
+//   spawnWithDeadline(computeSomething, 1, 3, 3);
+//   spawnWithDeadline(computeSomething, 2, 4, 4);
+
+//   initTimerInterrupts();
+
+//   while (1)
+//     no_operation();
+// }
+
+// 2nd Part
 int main()
 {
   piface_init();
@@ -129,7 +148,7 @@ int main()
 
   spawnWithDeadline(computeSomething, 0, 5, 5);
   spawnWithDeadline(computeSomething, 1, 3, 3);
-  spawnWithDeadline(computeSomething, 2, 7, 7);
+  spawnWithDeadline(computeSomething, 2, 4, 4);
 
   initTimerInterrupts();
 
