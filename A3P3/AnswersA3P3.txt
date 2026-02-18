@@ -1,0 +1,2 @@
+The program doesn't work because of Queue underflow, that is in the number of TCB's is 5 , but here 6 + 1(main thread) threads are being called and freeQ becomes empty, 
+the next dequeue(&freeQ) call inside spawn() fails and hence the kernel crashes due to queue underflow. This causes the program failure. 
