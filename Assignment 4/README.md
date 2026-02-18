@@ -159,7 +159,7 @@ The kernel interacts directly with peripheral registers:
 ## Output
 ### Output of Rate Monotonic
 <div align="center">
-  <video src="./Output/A4P2.mp4" width="400" controls>
+  <video src="https://github.com/Masters-Halmstad/Real-Time-Embedded-System/blob/main/Assignment%204/Output/A4P2.mp4" width="400" controls>
   </video>
 </div>
 
