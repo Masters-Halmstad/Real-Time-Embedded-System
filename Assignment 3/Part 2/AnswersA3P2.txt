@@ -1,0 +1,91 @@
+1. What is the purpose of the `spawn` function? How does it work?
+
+>> 1.a >> The purpose of the spawn() function is to create a new thread
+>> 2,b b >> When spawn function is called it:
+	>> takes a Thread Create Block (TCB) from freeQ 
+	>> Initializes the stack from the new thread 
+	>> Saves the thread's in readyQ for scheduling 
+
+2. What is the purpose of the `dispatch` function? How does it work?
+
+>> 2.a >> The purpose of the dispatch is to switch context that is, it schedules and transfer control from the current running thread to the saved state of the next thread selected form readyQ 
+
+>>2.b>> When the dispatch is called it first check if there is any other thread running 
+	>> If current is not Null, meaning some thread is being run
+		>> In this case it saves the currently running thread CPU state by calling 
+				setjmp(current->context) == 0)
+		>> If it is successfully save (return 0) then the function proceed to set current context with the next thread context i.e 
+				current = next;
+		>> Now by calling longjmp, it restore the saved state of the next thread, resuming it's execution where it last yielded i.e,
+				longjmp(next->context, 1);
+	>> If current is Null, meaning there's no thread being run
+		>> In this case current thread is set directly with the next thread followed by restoring the saved state by calling longjmp 
+
+3. What is the purpose of the `yield` function? How does it work?
+
+>> 3.a >> The purpose of the yield() function is to save the current thread state, places back into readyQ and switches executing to another waiting thread by calling dispatch().
+
+>> 3.b >> When yield is called :
+	>> It first disable the Interrupts using Disable() to prevent race condition
+	>> It then checks  if there are any threads in the readQ:
+	>> if readyQ is not Null, meaning there is available threads waiting 
+		>> In such case, it deque the thread from the readyQ, meaning it will be the next thread to be executed i.e:
+			thread p = dequeue(&readyQ);
+		>> Then it enqueue the current thread in the readQ , i.e:
+			enqueue(current, &readyQ);
+		>> Call dispatch() to perform context switching 
+	>> At the end, Interrupts are enable by Enable()
+
+
+4. When is the code `current->function(current->arg);` within the `spawn` function executed?
+
+>> The above code is not executed immediately on calling spawn() function, instead it runs later, when the spawned thread (here computePower) is first scheduled and starts running after longjmp
+	>> 1st Step: While running the spawn(computePower, 0) in the main function a new thread for computePower is created without executed the if block because setjmp(newp->context) returns 0
+	>> 2nd Step: Main thread is executed immediately i.e computePrimes()
+	>> 3rd Step: In the computePrimes() , calls yield()
+	>> 4th Step: Inside yield, takes a thread (p) that been created in step 1 i.e, computePower thread and puts the current thread (computePrimes) into readyQ
+	>> 5th Step: dispatch(p) switch the context and loads the new context from (longjmp(next->context, 1);
+	>> 6th Step: The above step now finally causes setjmp inside the new thread's  to return 1 , jumping into the mentioned code in spawn () and hence the if block is executed i.e,`current->function(current->arg);`
+
+
+5. After finishing the execution of line 3, describe the content of `readyQ`.
+	i. Note: you might want to draw a diagram to visualize the queue.
+
+>> Lets say:
+	>> Main thread (where computePrime executes) as --> Thread M , 
+	>> Thread for computePower as --> Thread P,
+	>> readyQ as a stack initially empty as ---> readQ: []
+   After the execution of line 3, that is after creating the thread for P , it is enque in readyQ, So
+	>> readyQ --> [P]
+	>> Running thread --> [M]
+	
+
+6. After finishing the execution of line 3, describe the content of `freeQ`.
+	• Note: you might want to draw a diagram to visualize the queue.
+
+>> Since NTHREADS is 5 and if [T0], [T1] .... [T4] represent the respective threads then 
+	>> Initially :
+		>> freeQ = [T0] -> [T1] -> [T2] -> [T3] -> [T4] -> NULL
+	>> After the execution of line 3, one TCB ([T0]) will be used so the freeQ will be :
+		>> freeQ = [T1] -> [T2] -> [T3] -> [T4] -> NULL
+
+
+7. Which task, i.e., computePower and computePrimes, executes first, and why?
+
+>> computePrimes execute first as it is in the main threads so when main function is executed it will immediately run computePrimes while the spawn(computePower, 0) will just create a thread for computePower without execution
+
+
+8. Although functions `computePower` and `computePrimes` never return, they execute concurrently in the `a3p1.img` kernel. How is this achieved?
+
+>> Both execute concurrently because threads explicitly call yield() during execution, this causes the current thread to save it's context and give up the CPU, allowing scheduler (dispatch) to restore another thread's context from readyQ. This cooperative context switching creates an illusion of executing concurrently.
+
+
+9. In a hypothetical scenario where `computePower` and `computePrimes` do return, which implies that the threads assigned to execute the tasks will terminate, you may need to track which threads terminated. One approach is to keep information about the terminated threads in a list called `doneQ`. Where in `lib/tinythreads.c` would you add a thread that terminated into `doneQ`?
+
+>> We'll the terminated thread into doneQ immediately after the thread’s function finishes execution, that is below `current->function(current->arg);` in the spawn function:
+>> So instead of adding into freeQ , we can add it into doneQ , i.e,
+	>> enqueue(current, &doneQ);
+
+
+
+	
